@@ -1,4 +1,4 @@
-package statistics;
+package quantitveMethods;
 
 import java.util.ArrayList;
 import java.util.Random;
