@@ -1,129 +1,81 @@
 package quantitveMethods;
 
-import java.util.ArrayList;
-//import org.apache.commons.math3.distribution;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.distribution.TDistribution;
 
 public class TwoTailed {
 	
-
-	private double significance, meanDifference;
-	private ArrayList<Double> sample1, sample2;
-	private double X1, X2; 
-	private int[] sampleSize = new int[2];
-	private double var1, var2;
-	public boolean outcome;
+	private double significance, theta , meanDifference, stdDifference, var1 , var2;
+	private double[] sample1, sample2;
 	
-	public TwoTailed(double significance, double meanDifference, 
-			ArrayList<Double> sample1, ArrayList<Double> sample2, int[] sampleSize) {
+	public TwoTailed(double significance, double theta, 
+			double[] sample1, double[] sample2) {
 		this.significance = significance;
-		this.meanDifference = meanDifference;
+		this.theta = theta;
 		this.sample1 = sample1;
 		this.sample2 = sample2;
-		this.sampleSize = sampleSize;
-		hypothesisPrint();
-		calculateMeans();
-		calculateVariances();
+		calculations();
 	}
 	
+	public void calculations() {
+		hypothesisPrint();
+		meanDifference = findMeanDifferenceOfTwoSamples(sample1, sample2);
+		stdDifference = calculateStdDifference(sample1, sample2); //S_(x1-x2)
+		testCases(sample1, sample2);
+	}
+	
+
 	private void hypothesisPrint() {
 		System.out.println("We are going to test for the following:");
-		System.out.println("H0: μ1 - μ2 = " + meanDifference);
-		System.out.println("H1: μ1 - μ2 ≠" + meanDifference);
-	}
-
-
-	public void calculateMeans() {
-		double sum = 0;
-		
-		for (Double value: sample1) {
-		    sum += value;
-		}
-		
-		X1 = sum / sampleSize[0];
-		sum = 0;
-		
-		for (Double value: sample2) {
-		    sum += value;
-		}
-		
-		X2 = sum / sampleSize[1];
+		System.out.println("H0: μ1 - μ2 = " + theta);
+		System.out.println("H1: μ1 - μ2 ≠ " + theta);
 	}
 	
-	public void calculateVariances() {
-		double sum = 0;
-		
-		for (Double value: sample1) {
-			sum += (value - X1) * (value - X1) ;
-		}
-		
-		var1 = sum / sampleSize[0];
-		sum = 0;
-		
-		for (Double value: sample2) {
-			sum += (value - X2) * (value - X2) ;
-		}
-		
-		var2 = sum / sampleSize[1];
+	public double findMeanDifferenceOfTwoSamples(double[] sample1, double[] sample2) {
+		return StatUtils.mean(sample1) - StatUtils.mean(sample2);
 	}
 	
-	public void testCases() {
-		if (sampleSize[0] > 30 && sampleSize[1] > 30) {
-			Zdistribution();
+	public double calculateStdDifference(double[] sample1, double[] sample2) {
+		return Math.sqrt((StatUtils.variance(sample1)/sample1.length) +
+				(StatUtils.variance(sample2)/sample2.length));
+	}
+	
+	public void testCases(double[] sample1, double[] sample2) {
+		if (sample1.length > 30 && sample2.length > 30) {
+			zDistribution(meanDifference, stdDifference, theta, significance);
 		} else {
-			TStudentDistribution();
+			tStudentDistribution(sample1, sample2);
 		}
 	}
 	
-	private void TStudentDistribution() {
+	private void zDistribution(double meanDifference, double stdDifference,
+			double theta, double significance) {
+		double Z = (meanDifference - theta) / stdDifference;
+		NormalDistribution normalDist = new NormalDistribution();
+		double upper_limit = normalDist.inverseCumulativeProbability(1 - significance / 2);
+		printResults(Z, upper_limit);
+	}
+	
+	private void tStudentDistribution(double[] sample1, double[] sample2) { //assuming equal variances
 		double sp, numerator, denominator;
-		numerator = (sampleSize[0] -1) * (var1 * var1) + (sampleSize[1] -1) * (var2 * var2);
-		denominator = (sampleSize[0] -1) + (sampleSize[1] -1);
+		numerator = (sample1.length -1) * (Math.pow(StatUtils.variance(sample1), 2)) + 
+				(sample2.length -1) * (Math.pow(StatUtils.variance(sample2), 2));
+		denominator = sample1.length + sample2.length - 2;
 		sp = numerator / denominator;
-		double sX1X2 = Math.sqrt(Math.pow(sp, 2.0) * (1 / sampleSize[0] + 1 / sampleSize[1]));
-		double t = 0; 
-		
-		if (sX1X2 != 0) {
-			t = ((X1 - X2) - meanDifference) / sX1X2;
-		} else { 
-			t = 99999;
-		}
-		int n = sampleSize[0] + sampleSize[1] - 2; 
-		//use imported distribution to calculate tn
-		double tn = 0;//we give its value here
-		if (Math.abs(tn) > Math.abs(t)) {
-			outcome = true;
-			results(true);
-		} else {
-			outcome = false;
-			results(false);
-		}
-	}
-
-
-	private  void Zdistribution() {
-		double twoSampleVariance;
-		twoSampleVariance = Math.sqrt((var1 * var1) / sampleSize[0] + (var2 * var2) / sampleSize[1]);
-		double z = 0;
-		if (twoSampleVariance != 0)
-			z = ((X1 - X2) - meanDifference) / twoSampleVariance;
-		else
-			z = 99999;
-		//use imported distribution to calculate zn
-		double zn = 0;//we give its value here
-		if (Math.abs(zn) > Math.abs(z)) {
-			outcome = true;
-			results(true);
-		} else {
-			outcome = false;
-			results(false);
-		}
+		double sX1X2 = Math.sqrt(Math.pow(sp, 2.0) * (1 / sample1.length + 1 / sample2.length));
+		double tn = ((meanDifference) - theta) / sX1X2;
+		int pdf = sample1.length + sample2.length - 2; 
+		TDistribution tDist = new TDistribution(pdf);
+		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
+		printResults(tn, upper_limit);
 	}
 	
-	private void results(boolean outcome) {
-		if (outcome == true) {
-			System.out.println("We do not reject the hypothesis H0");
+	private void printResults (double variable, double upper_limit) {
+		if (Math.abs(variable) < upper_limit) {
+			System.out.println("We cannot reject H0.");
 		} else {
-			System.out.println("We reject the hypothesis H0 and we accept the Hypothesis H1");
+			System.out.println("H0 is rejected and H1 is accepted.");
 		}
 	}
 
@@ -137,29 +89,33 @@ public class TwoTailed {
 	}
 	
 	public double getMeanDifference() {
-		return meanDifference;
+		return theta;
 	}
 
 	public void setMeanDifference(float meanDifference) {
-		this.meanDifference = meanDifference;
+		this.theta = meanDifference;
 	}
 
-	public ArrayList<Double> getSample1() {
+
+	public double[] getSample1() {
 		return sample1;
 	}
-	
 
-	public void setSamplePathNo1(ArrayList<Double> sample1) {
+
+	public void setSample1(double[] sample1) {
 		this.sample1 = sample1;
 	}
 
-	public ArrayList<Double> getSample2() {
+
+	public double[] getSample2() {
 		return sample2;
 	}
 
-	public void setSamplePathNo2(ArrayList<Double> sample2) {
+
+	public void setSample2(double[] sample2) {
 		this.sample2 = sample2;
 	}
+	
 	
 	
 }
