@@ -10,11 +10,12 @@ import java.util.Scanner;
 
 public class UserInterface {
 	double significance, meanDifference;
-	int sampleSize;
+	int[] sampleSize = new int[2];
+	int i = 0;
 	ArrayList<Double> sample1 , sample2;
 	Scanner input = new Scanner(System.in);
 	
-	public void requestData() throws IOException {
+	public void requestDataForExercise1() throws IOException {
 		System.out.println("Welcome to the world of two-tailed test");
 		significance = insertSignificance();
 		meanDifference = insertMeanDifference();
@@ -23,16 +24,22 @@ public class UserInterface {
 		System.out.println(sample1);
 	}
 	
+	public void requestDataForExercise2() throws IOException {
+		System.out.println("Welcome to the world of two-tailed test");
+		significance = insertSignificance();
+		meanDifference = insertMeanDifference();
+	}
+	
 
 	public double insertSignificance() {
 		double significance;
-		System.out.println("Please insert significance:");
+		System.out.println("Please insert significance: (With a comma not a dot)");
 		for(;;) {
 			significance = input.nextDouble();
-			if (significance > 0 && significance < 0.5) {
+			if (significance > 0 && significance < 1) {
 				break;
 			} else {
-				System.out.println("Significance needs to be greater than 0 and less than 0.5");
+				System.out.println("Significance needs to be greater than 0 and less than 1");
 				System.out.println("Please insert significance again:");
 			}
 		}
@@ -60,7 +67,8 @@ public class UserInterface {
 				while((line = reader.readLine()) != null) {
 					linesRead++;
 					if (linesRead == 1) {
-						sampleSize = Integer.parseInt(line); //it does not return :(
+						sampleSize[i] = Integer.parseInt(line); //it does not return :(
+						i += 1;
 					} else {
 						sample.add(Double.parseDouble(line));
 					}
@@ -74,8 +82,19 @@ public class UserInterface {
 	
 	}
 	
+	
+	
+	public double getSignificance() {
+		return significance;
+	}
+
+	public double getMeanDifference() {
+		return meanDifference;
+	}
+
+
 	public static void main(String[] args) throws IOException {
 		UserInterface caller = new UserInterface();
-		caller.requestData();
+		caller.requestDataForExercise1();
 	}
 }
