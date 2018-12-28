@@ -24,8 +24,8 @@ public class TwoTailed {
 		hypothesisPrint();
 		meanDifference = findMeanDifferenceOfTwoSamples(sample1, sample2);
 		stdDifference = calculateStdDifference(sample1, sample2); //S_(x1-x2)
-		var1 = StatUtils.variance(sample1)/sample1.length; 
-		var2 = StatUtils.variance(sample2)/sample2.length;
+		var1 = StatUtils.variance(sample1); 
+		var2 = StatUtils.variance(sample2);
 		testCases(sample1, sample2);
 	}
 	
