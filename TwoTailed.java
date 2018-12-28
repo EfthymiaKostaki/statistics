@@ -83,8 +83,8 @@ public class TwoTailed {
 	
 	private void hypothesisFtest() {
 		System.out.println("We are going to test for the following hypothesis:");
-		System.out.println("H0: σ1^2/σ2^2 = 1");
-		System.out.println("H0: σ1^2/σ2^2 ≠ 1");
+		System.out.println("H0: σ1²/σ2² = 1");
+		System.out.println("H1: σ1²/σ2² ≠ 1");
 		System.out.println("Significance level = " + theta);
 	}
 
