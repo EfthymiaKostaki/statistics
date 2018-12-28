@@ -4,43 +4,50 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class RandomTwoTailed {
-	ArrayList<Double> population1;
-	ArrayList<Double> population2;
+	double significance, theta;
+	ArrayList<Double> population1 = new ArrayList<Double>();
+	ArrayList<Double> population2 = new ArrayList<Double>();
+	double[] sample1, sample2;
 	int notRejectH0 = 0;
+	int rejectH0 = 0;
 
-	public RandomTwoTailed() {
+	public RandomTwoTailed(double significance, double theta) {
+		this.significance = significance;
+		this.theta = theta;
 		createRandomPopulations();
 		test();
 	}
 
 	private void test() {
 		for (int i =0; i< 10000; i++) {
-			ArrayList<Double> sample1 = new ArrayList<Double>();
 			sample1 = selectRandomSample(population1);
-			ArrayList<Double> sample2 = new ArrayList<Double>();
 			sample2 = selectRandomSample(population2);
-			UserInterface ui = new UserInterface();
-			//we need to handle the IOecxeption here
-			ui.requestDataForExercise2();
-			Double significance = ui.getSignificance();
-			Double meanDifference = ui.getMeanDifference();
 			int[] sampleSize = new int[2];
 			sampleSize[0] = 10;
 			sampleSize[1] = 10;
-			TwoTailed tt = new TwoTailed(significance, meanDifference, sample1, sample2, sampleSize);
-			 if (tt.outcome = true) {
+			TwoTailed tt = new TwoTailed(significance, theta, sample1, sample2);
+			 if (tt.getOutcome() == 0) {
 				 notRejectH0 += 1;
+			 } else {
+				 rejectH0 += 1;
 			 }
+		}
+		System.out.println("H0 has not been rejected "+notRejectH0+" times");
+		System.out.println("H0 has been rejected "+rejectH0+" times");
+		if(rejectH0 < notRejectH0) {
+			System.out.println("The results were obvious since the sample must look like the population.");
+		} else {
+			System.out.println("The results were unexpected since we would have thought that the sample would look like the population");
 		}
 	}
 
-	private ArrayList<Double> selectRandomSample(ArrayList<Double> population) {
-		ArrayList<Double> sample = new ArrayList<Double>();
+	private double[] selectRandomSample(ArrayList<Double> population) {
+		double[] sample = new double[10];
 		Random rand = new Random(); 
 		
 		for (int i =0; i< 10; i++) {
 			int index = rand.nextInt(population.size());
-			sample.add(population.get(index));
+			sample[i] = population.get(index);
 		}
 		
 		return sample;
@@ -48,7 +55,7 @@ public class RandomTwoTailed {
 
 	private void createRandomPopulations() {
 		//Population A
-		java.util.Random r1 = new java.util.Random (1);
+		Random r1 = new Random (1);
 		for(int i=0; i<1000; i++)
 		{
 		 double stdNorm = r1. nextGaussian();
@@ -56,7 +63,7 @@ public class RandomTwoTailed {
 		 population1.add(popValue);
 		}
 		
-		java.util.Random r2 = new java.util.Random (2);
+		Random r2 = new Random (2);
 		//Population B
 		for(int i=0; i<1000; i++)
 		{
