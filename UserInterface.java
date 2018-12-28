@@ -14,7 +14,7 @@ public class UserInterface {
 	double[] sample1, sample2;
 	Scanner input = new Scanner(System.in);
 	
-	public void requestData() throws IOException {
+	public void requestDataForExercise1() throws IOException {
 		System.out.println("Welcome to the world of two-tailed test");
 		significance = insertSignificance();
 		theta = insertMeanDifference();
@@ -23,6 +23,28 @@ public class UserInterface {
 		new TwoTailed(significance, theta, sample1, sample2);
 	}
 	
+	public void requestDataForExercise2() {
+		significance = insertSignificance();
+		theta = insertMeanDifference();
+		new RandomTwoTailed(significance, theta);
+	}
+	
+
+	public double getSignificance() {
+		return significance;
+	}
+
+	public void setSignificance(double significance) {
+		this.significance = significance;
+	}
+
+	public double getTheta() {
+		return theta;
+	}
+
+	public void setTheta(double theta) {
+		this.theta = theta;
+	}
 
 	public double insertSignificance() {
 		double significance;
@@ -84,7 +106,8 @@ public class UserInterface {
 	
 	public static void main(String[] args) throws IOException {
 		UserInterface caller = new UserInterface();
-		caller.requestData(); 
+	//	caller.requestDataForExercise1();
+		caller.requestDataForExercise2();
 		
 	}
 }
