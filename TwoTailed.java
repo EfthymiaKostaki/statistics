@@ -6,6 +6,7 @@ import org.apache.commons.math3.distribution.TDistribution;
 
 public class TwoTailed {
 	
+	private int outcome;
 	private double significance, theta , meanDifference, stdDifference, var1 , var2;
 	private double[] sample1, sample2;
 	
@@ -54,7 +55,7 @@ public class TwoTailed {
 		double Z = (meanDifference - theta) / stdDifference;
 		NormalDistribution normalDist = new NormalDistribution();
 		double upper_limit = normalDist.inverseCumulativeProbability(1 - significance / 2);
-		printResults(Z, upper_limit);
+		outcome = printResults(Z, upper_limit);
 	}
 	
 	private void tStudentDistribution(double[] sample1, double[] sample2) { //assuming equal variances
@@ -68,14 +69,24 @@ public class TwoTailed {
 		int pdf = sample1.length + sample2.length - 2; 
 		TDistribution tDist = new TDistribution(pdf);
 		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
-		printResults(tn, upper_limit);
+		outcome = printResults(tn, upper_limit);
 	}
 	
-	private void printResults (double variable, double upper_limit) {
-		if (Math.abs(variable) < upper_limit) {
+	public int getOutcome() {
+		return outcome;
+	}
+
+	public void setOutcome(int outcome) {
+		this.outcome = outcome;
+	}
+
+	private int printResults (double variable, double upper_limit) {
+		if (variable < upper_limit && variable > -upper_limit) {
 			System.out.println("We cannot reject H0.");
+			return 0;
 		} else {
 			System.out.println("H0 is rejected and H1 is accepted.");
+			return 1;
 		}
 	}
 
