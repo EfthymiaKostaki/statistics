@@ -59,15 +59,6 @@ public class TwoTailed {
 				tSudentDistributionNotEqualVar(sample1, sample2);
 			}
 		}
-	private void tSudentDistributionNotEqualVar(double[] sample12, double[] sample22) {
-		double t = (meanDifference - theta ) / stdDifference;
-		double degreesFreedom = Math.sqrt(var1 / sample1.length + var2 / sample2.length) / 
-				(Math.sqrt(var1 / sample1.length) / (sample1.length - 1) 
-						+ Math.sqrt(var2 / sample2.length) / (sample2.length - 1)) ;//square root
-		TDistribution tDist = new TDistribution(degreesFreedom);
-		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
-		printResults(t, upper_limit);
-	}
 
 	private boolean ftest() {
 		hypothesisFtest();
@@ -103,12 +94,23 @@ public class TwoTailed {
 		denominator = sample1.length + sample2.length - 2;
 		sp = numerator / denominator;
 		double sX1X2 = Math.sqrt(Math.pow(sp, 2.0) * (1 / sample1.length + 1 / sample2.length));
-		double tn = ((meanDifference) - theta) / sX1X2;
+		double tn = (meanDifference - theta) / sX1X2;
 		int pdf = sample1.length + sample2.length - 2; 
 		TDistribution tDist = new TDistribution(pdf);
 		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
 		printResults(tn, upper_limit);
 	}
+	
+	private void tSudentDistributionNotEqualVar(double[] sample12, double[] sample22) {
+		double t = (meanDifference - theta ) / stdDifference;
+		double degreesOfFreedom = Math.sqrt(var1 / sample1.length + var2 / sample2.length) / 
+				(Math.sqrt(var1 / sample1.length) / (sample1.length - 1) 
+						+ Math.sqrt(var2 / sample2.length) / (sample2.length - 1)) ;//square root
+		TDistribution tDist = new TDistribution(degreesOfFreedom);
+		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
+		printResults(t, upper_limit);
+	}
+
 	
 	private int printResults (double variable, double upper_limit) {
 		if (variable < upper_limit && variable > -upper_limit) {
