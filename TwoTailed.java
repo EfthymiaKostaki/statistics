@@ -34,6 +34,7 @@ public class TwoTailed {
 		System.out.println("We are going to test for the following:");
 		System.out.println("H0: μ1 - μ2 = " + theta);
 		System.out.println("H1: μ1 - μ2 ≠ " + theta);
+		System.out.println("Significance level:" + significance);
 	}
 	
 	public double findMeanDifferenceOfTwoSamples(double[] sample1, double[] sample2) {
@@ -76,7 +77,7 @@ public class TwoTailed {
 		System.out.println("We are going to test for the following hypothesis:");
 		System.out.println("H0: σ1²/σ2² = 1");
 		System.out.println("H1: σ1²/σ2² ≠ 1");
-		System.out.println("Significance level = " + theta);
+		System.out.println("Significance level = " + significance);
 	}
 
 	private void zDistribution(double meanDifference, double stdDifference,
@@ -115,9 +116,11 @@ public class TwoTailed {
 	private int printResults (double variable, double upper_limit) {
 		if (variable < upper_limit && variable > -upper_limit) {
 			System.out.println("We cannot reject H0.");
+			outcome = 0;
 			return 0;
 		} else {
 			System.out.println("H0 is rejected and H1 is accepted.");
+			outcome = 1;
 			return 1;
 		}
 	}
@@ -127,7 +130,7 @@ public class TwoTailed {
 		return significance;
 	}
 	
-	public void setSignificance(float significance) {
+	public void setSignificance(double significance) {
 		this.significance = significance;
 	}
 	
@@ -135,7 +138,7 @@ public class TwoTailed {
 		return theta;
 	}
 
-	public void setMeanDifference(float meanDifference) {
+	public void setMeanDifference(double meanDifference) {
 		this.theta = meanDifference;
 	}
 
@@ -162,6 +165,4 @@ public class TwoTailed {
 	public int getOutcome() {
 		return outcome;
 	}
-	
-	
 }
