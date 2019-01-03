@@ -91,16 +91,12 @@ public class TwoTailed {
 				(sample2.length -1) * (Math.pow(var2, 2));
 		denominator = sample1.length + sample2.length - 2;
 		sp = numerator / denominator;
-		System.out.println(sp); //edw
 		double sX1X2 = (sp*sp / sample1.length) + (sp*sp / sample2.length);
 		sX1X2 = Math.sqrt(sX1X2);
-		System.out.println(sX1X2); //edw
 		double tn = ((meanDifference) - theta) / sX1X2;
 		int pdf = sample1.length + sample2.length - 2; 
 		TDistribution tDist = new TDistribution(pdf);
-		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
-		System.out.println("tn is: " + tn); //edw
-		System.out.println("up limit is: " + upper_limit); //edw	
+		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);	
 		outcome = printResults(tn, upper_limit);
 	}
 	
