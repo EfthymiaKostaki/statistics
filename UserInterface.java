@@ -106,8 +106,17 @@ public class UserInterface {
 	
 	public static void main(String[] args) throws IOException {
 		UserInterface caller = new UserInterface();
-	//	caller.requestDataForExercise1();
-		caller.requestDataForExercise2();
-		
+		System.out.println("Which of the two do you wish to do? (1 or 2)");
+		System.out.println("Erwthma 1");
+		System.out.println("Erwthma 2");
+		System.out.println("Choose:");
+		Scanner input = new Scanner(System.in);
+		int choice = input.nextInt();
+		if (choice == 1) {
+			caller.requestDataForExercise1();			
+		} else if (choice == 2) {	
+			caller.requestDataForExercise2();
+		}
+		input.close();
 	}
 }

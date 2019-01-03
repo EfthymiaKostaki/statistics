@@ -2,6 +2,7 @@ package quantitveMethods;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.apache.commons.math3.distribution.FDistribution;
 import org.apache.commons.math3.distribution.TDistribution;
 
 public class TwoTailed {
@@ -23,6 +24,8 @@ public class TwoTailed {
 		hypothesisPrint();
 		meanDifference = findMeanDifferenceOfTwoSamples(sample1, sample2);
 		stdDifference = calculateStdDifference(sample1, sample2); //S_(x1-x2)
+		var1 = StatUtils.variance(sample1);
+		var2 = StatUtils.variance(sample2);
 		testCases(sample1, sample2);
 	}
 	
@@ -34,7 +37,7 @@ public class TwoTailed {
 	}
 	
 	public double findMeanDifferenceOfTwoSamples(double[] sample1, double[] sample2) {
-		return StatUtils.mean(sample1) - StatUtils.mean(sample2);
+		return (StatUtils.mean(sample1) - StatUtils.mean(sample2));
 	}
 	
 	public double calculateStdDifference(double[] sample1, double[] sample2) {
@@ -45,11 +48,35 @@ public class TwoTailed {
 	public void testCases(double[] sample1, double[] sample2) {
 		if (sample1.length > 30 && sample2.length > 30) {
 			zDistribution(meanDifference, stdDifference, theta, significance);
-		} else {
-			tStudentDistribution(sample1, sample2);
+		} else 
+			System.out.println("We are going to conduct a F-test to see if population variances are equal");
+			boolean equalVariances = ftest();
+			if (equalVariances) {
+				tStudentDistribution(sample1, sample2);
+			} else {
+				tSudentDistributionNotEqualVar(sample1, sample2);
 		}
 	}
 	
+	private boolean ftest() {
+		hypothesisFtest();
+		double f =  var1 / var2;
+		FDistribution fd = new FDistribution(sample1.length - 1, sample2.length -1);
+		double upper_limit =fd.inverseCumulativeProbability(1 - significance / 2);
+		if (Math.abs(f) < Math.abs(upper_limit)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private void hypothesisFtest() {
+		System.out.println("We are going to test for the following hypothesis:");
+		System.out.println("H0: σ1²/σ2² = 1");
+		System.out.println("H1: σ1²/σ2² ≠ 1");
+		System.out.println("Significance level = " + theta);
+	}
+			
 	private void zDistribution(double meanDifference, double stdDifference,
 			double theta, double significance) {
 		double Z = (meanDifference - theta) / stdDifference;
@@ -60,24 +87,35 @@ public class TwoTailed {
 	
 	private void tStudentDistribution(double[] sample1, double[] sample2) { //assuming equal variances
 		double sp, numerator, denominator;
-		numerator = (sample1.length -1) * (Math.pow(StatUtils.variance(sample1), 2)) + 
-				(sample2.length -1) * (Math.pow(StatUtils.variance(sample2), 2));
+		numerator = (sample1.length - 1) * (Math.pow(var1, 2)) + 
+				(sample2.length -1) * (Math.pow(var2, 2));
 		denominator = sample1.length + sample2.length - 2;
 		sp = numerator / denominator;
-		double sX1X2 = Math.sqrt(Math.pow(sp, 2.0) * (1 / sample1.length + 1 / sample2.length));
+		System.out.println(sp); //edw
+		double sX1X2 = (sp*sp / sample1.length) + (sp*sp / sample2.length);
+		sX1X2 = Math.sqrt(sX1X2);
+		System.out.println(sX1X2); //edw
 		double tn = ((meanDifference) - theta) / sX1X2;
 		int pdf = sample1.length + sample2.length - 2; 
 		TDistribution tDist = new TDistribution(pdf);
 		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
+		System.out.println("tn is: " + tn); //edw
+		System.out.println("up limit is: " + upper_limit); //edw	
 		outcome = printResults(tn, upper_limit);
 	}
 	
-	public int getOutcome() {
-		return outcome;
+	private void tSudentDistributionNotEqualVar(double[] sample12, double[] sample22) {
+		double t = (meanDifference - theta ) / stdDifference;
+		double degreesOfFreedom = Math.sqrt(var1 / sample1.length + var2 / sample2.length) / 
+				(Math.sqrt(var1 / sample1.length) / (sample1.length - 1) 
+						+ Math.sqrt(var2 / sample2.length) / (sample2.length - 1)) ;//square root
+		TDistribution tDist = new TDistribution(degreesOfFreedom);
+		double upper_limit = tDist.inverseCumulativeProbability(1 - significance / 2);
+		printResults(t, upper_limit);
 	}
-
+	
 	private int printResults (double variable, double upper_limit) {
-		if (variable < upper_limit && variable > -upper_limit) {
+		if (Math.abs(variable) < upper_limit) {
 			System.out.println("We cannot reject H0.");
 			return 0;
 		} else {
@@ -86,6 +124,13 @@ public class TwoTailed {
 		}
 	}
 
+	public int getOutcome() {
+		return outcome;
+	}
+
+	public void setOutcome(int outcome) {
+		this.outcome = outcome;
+	}
 
 	public double getSignificance() {
 		return significance;
