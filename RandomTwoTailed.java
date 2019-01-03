@@ -1,4 +1,4 @@
-package quantitveMethods;
+package statistics;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,7 +23,7 @@ public class RandomTwoTailed {
 			sample1 = selectRandomSample(population1);
 			sample2 = selectRandomSample(population2);
 			TwoTailed tt = new TwoTailed(significance, theta, sample1, sample2);
-			 if (tt.getOutcome() == 0) {
+			 if (tt.getOutcome() == true) {
 				 notRejectH0 += 1;
 			 } else {
 				 rejectH0 += 1;
