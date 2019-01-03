@@ -76,10 +76,6 @@ public class TwoTailed {
 		return outcome;
 	}
 
-	public void setOutcome(int outcome) {
-		this.outcome = outcome;
-	}
-
 	private int printResults (double variable, double upper_limit) {
 		if (variable < upper_limit && variable > -upper_limit) {
 			System.out.println("We cannot reject H0.");
