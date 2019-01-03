@@ -1,4 +1,4 @@
-package quantitveMethods;
+package statistics;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -55,8 +55,10 @@ public class TwoTailed {
 			System.out.println("We are going to conduct a F-test to see is population variances are equal");
 			boolean equalVariances = ftest();
 			if (equalVariances) {
+				System.out.println("Equal Variances");
 				tStudentDistribution(sample1, sample2);
 			} else {
+				System.out.println("Equal Variances");
 				tSudentDistributionNotEqualVar(sample1, sample2);
 			}
 		}
@@ -90,11 +92,12 @@ public class TwoTailed {
 	
 	private void tStudentDistribution(double[] sample1, double[] sample2) { //assuming equal variances
 		double sp, numerator, denominator;
-		numerator = (sample1.length -1) * (Math.pow(StatUtils.variance(sample1), 2)) + 
-				(sample2.length -1) * (Math.pow(StatUtils.variance(sample2), 2));
+		numerator = (sample1.length -1) * (Math.pow(var1, 2)) + 
+				(sample2.length -1) * (Math.pow(var2, 2));
 		denominator = sample1.length + sample2.length - 2;
 		sp = numerator / denominator;
-		double sX1X2 = Math.sqrt(Math.pow(sp, 2.0) * (1 / sample1.length + 1 / sample2.length));
+		double sX1X2 = (sp*sp / sample1.length) + (sp*sp / sample2.length);
+		sX1X2 = Math.sqrt(sX1X2);
 		double tn = (meanDifference - theta) / sX1X2;
 		int pdf = sample1.length + sample2.length - 2; 
 		TDistribution tDist = new TDistribution(pdf);
@@ -102,7 +105,7 @@ public class TwoTailed {
 		printResults(tn, upper_limit);
 	}
 	
-	private void tSudentDistributionNotEqualVar(double[] sample12, double[] sample22) {
+	private void tSudentDistributionNotEqualVar(double[] sample1, double[] sample2) {
 		double t = (meanDifference - theta ) / stdDifference;
 		double degreesOfFreedom = Math.sqrt(var1 / sample1.length + var2 / sample2.length) / 
 				(Math.sqrt(var1 / sample1.length) / (sample1.length - 1) 
