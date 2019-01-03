@@ -9,7 +9,7 @@ public class TwoTailed {
 	
 	private double significance, theta , meanDifference, stdDifference, var1 , var2;
 	private double[] sample1, sample2;
-	private int outcome;
+	private boolean outcome;
 	
 	public TwoTailed(double significance, double theta, 
 			double[] sample1, double[] sample2) {
@@ -113,15 +113,13 @@ public class TwoTailed {
 	}
 
 	
-	private int printResults (double variable, double upper_limit) {
+	private void printResults (double variable, double upper_limit) {
 		if (variable < upper_limit && variable > -upper_limit) {
 			System.out.println("We cannot reject H0.");
-			outcome = 0;
-			return 0;
+			outcome = true;
 		} else {
 			System.out.println("H0 is rejected and H1 is accepted.");
-			outcome = 1;
-			return 1;
+			outcome = false;
 		}
 	}
 
@@ -162,7 +160,7 @@ public class TwoTailed {
 		this.sample2 = sample2;
 	}
 	
-	public int getOutcome() {
+	public boolean getOutcome() {
 		return outcome;
 	}
 }
