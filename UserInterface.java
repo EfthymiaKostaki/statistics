@@ -1,7 +1,4 @@
 package quantitveMethods;
-
-package statistics;
-
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.File;
@@ -50,13 +47,13 @@ public class UserInterface {
 
 	public double insertSignificance() {
 		double significance;
-		System.out.println("Please insert significance:");
+		System.out.println("Please insert significance: (with a comma)");
 		for(;;) {
 			significance = input.nextDouble();
-			if (significance > 0 && significance < 0.5) {
+			if (significance > 0 && significance < 1) {
 				break;
 			} else {
-				System.out.println("Significance needs to be greater than 0 and less than 0.5");
+				System.out.println("Significance needs to be greater than 0 and less than 1");
 				System.out.println("Please insert significance again:");
 			}
 		}
@@ -108,8 +105,7 @@ public class UserInterface {
 	
 	public static void main(String[] args) throws IOException {
 		UserInterface caller = new UserInterface();
-	//	caller.requestDataForExercise1();
+		//caller.requestDataForExercise1();
 		caller.requestDataForExercise2();
-		
 	}
 }
