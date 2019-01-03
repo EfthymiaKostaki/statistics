@@ -22,9 +22,6 @@ public class RandomTwoTailed {
 		for (int i =0; i< 10000; i++) {
 			sample1 = selectRandomSample(population1);
 			sample2 = selectRandomSample(population2);
-			int[] sampleSize = new int[2];
-			sampleSize[0] = 10;
-			sampleSize[1] = 10;
 			TwoTailed tt = new TwoTailed(significance, theta, sample1, sample2);
 			 if (tt.getOutcome() == 0) {
 				 notRejectH0 += 1;
