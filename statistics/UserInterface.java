@@ -49,10 +49,16 @@ public class UserInterface {
 			new TwoTailed(significance, theta, sample1, sample2);
 		twoTailed.hypothesisPrint();
 		double pValue = twoTailed.testCases(sample1, sample2);
-		if (twoTailed.printResults(pValue, significance)) {
-			 System.out.println("H0 cannot be rejected!");
+		if (pValue > significance) {
+			System.out.println("pValue " + Math.round(pValue)
+							+ " is greater than the inserted "
+							+ "significance\n" );
+			System.out.println("H0 cannot be rejected!");
 		} else {
-			 System.out.println("H0 is rejected and therefore, H1 is accepted!");
+			System.out.println("pValue " + Math.round(pValue)
+							+ " is less than the inserted "
+							+ "significance\n");
+			System.out.println("H0 is rejected and therefore, H1 is accepted!");
 		}
 	}
 
@@ -68,17 +74,16 @@ public class UserInterface {
 
 	public double insertSignificance() {
 		double significance;
-		System.out.println("Please insert significance: (with a comma)");
-		for(;;) {
+		System.out.println("Please insert significance (with a comma instead of dot):");
+		for (;;) {
 			significance = input.nextDouble();
 			if (significance > 0 && significance < 1) {
 				break;
 			} else {
 				System.out.println("Significance needs to be greater than 0 and less than 1");
-				System.out.println("Please insert significance again:");
+				System.out.println("Please insert significance again.");
 			}
 		}
-		System.out.println();
 		return significance;
 	}
 

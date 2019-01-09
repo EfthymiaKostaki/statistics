@@ -75,13 +75,15 @@ public class TwoTailed {
 		System.out.println("H0: σ1²/σ2² = 1");
 		System.out.println("H1: σ1²/σ2² ≠ 1");
 		System.out.println("Significance level = " + significance);
+		System.out.println();
 	}
 
 	private double zDistribution(double meanDifference, double standardError) {
 
-		double Z = (meanDifference - theta) / standardError;
+		double z = (meanDifference - theta) / standardError;
 		NormalDistribution normalDist = new NormalDistribution();
-		double pValue = 2 * normalDist.cumulativeProbability(Z);
+		double pValue = 2 * normalDist.cumulativeProbability(z);
+		System.out.println(pValue);
 		return pValue;
 	}
 

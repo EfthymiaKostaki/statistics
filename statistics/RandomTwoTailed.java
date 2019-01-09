@@ -34,14 +34,6 @@ public class RandomTwoTailed {
 		System.out.println("H0 has not been rejected " + notRejectH0
 		                + " times");
 		System.out.println("H0 has been rejected " + rejectH0 + " times");
-		if (rejectH0 < notRejectH0) {
-			System.out.println("The results were obvious "
-							+ "since the sample must look like the population.");
-		} else {
-			System.out.println("The results were unexpected "
-							+ "since we would have thought that the sample "
-							+ "would look like the population");
-		}
 	}
 
 	private double[] selectRandomSample(ArrayList<Double> population) {
