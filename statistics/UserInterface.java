@@ -17,9 +17,12 @@ public class UserInterface {
 	public static void main(String[] args) {
 		UserInterface caller = new UserInterface();
 		System.out.println("You need to choose one of the following: ");
-		System.out.println("1. Υποερώτημα Α");
-		System.out.println("2. Υποερώτημα Β");
-		System.out.println("Now, please make your choice (1 or 2)");
+		System.out.println("1) Perform a two tailed test "
+						+ "based on two samples inserted (.txt files).");
+
+		System.out.println("2) Perform a two tailed test 10 thousand times"
+						+ "based on randomly created populations.");
+		System.out.println("Now, please make your choice (either 1 or 2):");
 		Scanner input = new Scanner(System.in);
 		int choice = input.nextInt();
 		if (choice == 1) {
