@@ -22,6 +22,7 @@ public class UserInterface {
 
 		System.out.println("2) Perform a two tailed test 10 thousand times"
 						+ "based on randomly created populations.");
+		System.out.println();
 		System.out.println("Now, please make your choice (either 1 or 2):");
 		Scanner input = new Scanner(System.in);
 		int choice = input.nextInt();

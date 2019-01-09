@@ -124,7 +124,7 @@ public class TwoTailed {
 	 * return false;
 	 */
 	protected boolean printResults (double pValue, double significance) {
-		if (pValue > significance) {
+		if (pValue >= significance) {
 			return true;
 		} else {
 			return false;
